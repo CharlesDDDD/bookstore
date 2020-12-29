@@ -1,12 +1,8 @@
-import sqlite3 as sqlite
 from be.model import error
 from be.model import db_conn
 
-
 class Seller(db_conn.DBConn):
 
-    def __init__(self):
-        db_conn.DBConn.__init__(self)
 
     def add_book(self, user_id: str, store_id: str, book_id: str, book_json_str: str, stock_level: int):
         try:
@@ -20,8 +16,6 @@ class Seller(db_conn.DBConn):
             self.conn.execute("INSERT into store(store_id, book_id, book_info, stock_level)"
                               "VALUES (?, ?, ?, ?)", (store_id, book_id, book_json_str, stock_level))
             self.conn.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"
@@ -53,8 +47,6 @@ class Seller(db_conn.DBConn):
             self.conn.execute("INSERT into user_store(store_id, user_id)"
                               "VALUES (?, ?)", (store_id, user_id))
             self.conn.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"

@@ -8,6 +8,8 @@ from be.view import seller
 from be.view import buyer
 #from be.model.store import init_database
 from flask_sqlalchemy import SQLAlchemy
+from be import config
+from be.table import *
 
 bp_shutdown = Blueprint("shutdown", __name__)
 
@@ -29,7 +31,7 @@ def be_run():
     this_path = os.path.dirname(__file__)
     parent_path = os.path.dirname(this_path)
     log_file = os.path.join(parent_path, "app.log")
-    init_database(parent_path)
+    # init_database(parent_path)
 
     logging.basicConfig(filename=log_file, level=logging.ERROR)
     handler = logging.StreamHandler()
@@ -44,7 +46,7 @@ def be_run():
     app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
     app.register_blueprint(buyer.bp_buyer)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:WAMM0609dd@localhost:3306/test'
-    app.config['SQLALCHEMY_ECHO'] = True
+    app.config.from_object(config)
     db = SQLAlchemy(app)
+    db.create_all()
     app.run()
