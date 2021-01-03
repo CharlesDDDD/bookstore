@@ -67,6 +67,7 @@ class User(db_conn.DBConn):
 
             user = User()
             user.user_id = user_id
+
             user.password = password
             user.balance = 0
             user.token = token
