@@ -32,8 +32,6 @@ class Seller(db_conn.DBConn):
             self.conn.execute("UPDATE store SET stock_level = stock_level + ? "
                               "WHERE store_id = ? AND book_id = ?", (add_stock_level, store_id, book_id))
             self.conn.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"

@@ -4,11 +4,11 @@ import json
 import logging
 from be.model import db_conn
 from be.model import error
-from be.table.new_order import new_order
-from be.table.new_order_detail import new_order_detail
-from be.table.user import user
-from be.table.store import store
-from be.table.user_store import user_store
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
+from be.table.user import User
+from be.table.store import Store
+from be.table.user_store import User_Store
 
 
 class Buyer(db_conn.DBConn):

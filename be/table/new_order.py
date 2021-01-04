@@ -1,8 +1,17 @@
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy()
+from sqlalchemy import Column, Integer, String
+from be.model.database import Base
 
-class new_order(db.model):
+
+class New_Order(Base):
     __tablename__ = 'new_order'
-    order_id = db.Column(db.String(80), primary_key=True)
-    user_id = db.Column(db.String(80), unique=True)
-    store_id = db.Column(db.String(80), nullable=False)
+    order_id = Column(String(80), primary_key=True)
+    user_id = Column(String(80), unique=True)
+    store_id = Column(String(80), nullable=False)
+
+    def __init__(self, order_id=None, user_id=None, store_id=None):
+        self.order_id = order_id
+        self.user_id = user_id
+        self.store_id = store_id
+
+    def __repr__(self):
+        return '<User %r,%r,%r>' % (self.order_id, self.user_id, self.store_id)

@@ -1,21 +1,19 @@
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import  ForeignKey
-db = SQLAlchemy()
+from sqlalchemy import Column, Integer, String
+from be.model.database import Base
 
-class new_order_detail(db.model):
+
+class New_Order_Detail(Base):
     __tablename__ = 'new_order_detail'
-    order_id = db.Column(db.String(80), primary_key=True)
-    book_id = db.Column(db.String(80), ForeignKey('book.book_id'))
-    count = db.Column(db.Integer(), nullable=False)
-    price=db.Column(db.Integer(), nullable=False)
-from flask_sqlalchemy import SQLAlchemy
+    order_id = Column(String(80), primary_key=True)
+    book_id = Column(String(80), primary_key=True)
+    count = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
 
-db = SQLAlchemy()
+    def __init__(self, order_id=None, book_id=None, count=None, price=None):
+        self.order_id = order_id
+        self.book_id = book_id
+        self.count = count
+        self.price = price
 
-
-class new_order_detail(db.model):
-    __tablename__ = 'new_order_detail'
-    order_id = db.Column(db.String(80), primary_key=True)
-    book_id = db.Column(db.String(80), primary_key=True)
-    count = db.Column(db.Interger, nullable=False)
-    price = db.Column(db.Interger, nullable=False)
+    def __repr__(self):
+        return '<User %r,%r,%r,%r>' % (self.order_id, self.book_id, self.count, self.price)

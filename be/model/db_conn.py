@@ -1,29 +1,26 @@
-from be.model import store
+from be.table.user import User
+from be.table.user_store import User_Store
+from be.table.store import Store
 
 
 class DBConn:
-    def __init__(self):
-        self.conn = store.get_db_conn()
 
-    def user_id_exist(self, user_id):
-        cursor = self.conn.execute("SELECT user_id FROM user WHERE user_id = ?;", (user_id,))
-        row = cursor.fetchone()
+    def user_id_exist(user_id):
+        row = User.query.filter(User.user_id == user_id).first()
         if row is None:
             return False
         else:
             return True
 
-    def book_id_exist(self, store_id, book_id):
-        cursor = self.conn.execute("SELECT book_id FROM store WHERE store_id = ? AND book_id = ?;", (store_id, book_id))
-        row = cursor.fetchone()
+    def book_id_exist(store_id, book_id):
+        row = Store.query.filter(Store.store_id == store_id, Store.book_id == book_id).first()
         if row is None:
             return False
         else:
             return True
 
-    def store_id_exist(self, store_id):
-        cursor = self.conn.execute("SELECT store_id FROM user_store WHERE store_id = ?;", (store_id,))
-        row = cursor.fetchone()
+    def store_id_exist(store_id):
+        row = User_Store.query.filter(User_Store.store_id == store_id)
         if row is None:
             return False
         else:
