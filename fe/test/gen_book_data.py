@@ -1,5 +1,5 @@
 import random
-from fe.access import book
+from be.table import book
 from fe.access.new_seller import register_new_seller
 
 

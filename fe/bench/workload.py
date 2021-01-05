@@ -2,7 +2,7 @@ import logging
 import uuid
 import random
 import threading
-from fe.access import book
+from be.table import book
 from fe.access.new_seller import register_new_seller
 from fe.access.new_buyer import register_new_buyer
 from fe.access.buyer import Buyer
