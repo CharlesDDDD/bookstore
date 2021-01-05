@@ -18,6 +18,7 @@ def init_db():
     import be.table.user_store
     import be.table.new_order_detail
     import be.table.new_order
+
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     from be.table.book import BookDB
