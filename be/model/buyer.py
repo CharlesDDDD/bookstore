@@ -70,9 +70,9 @@ class Buyer(db_conn.DBConn):
             order_id = uid
             db_session.commit()
 
-        except sqlite.Error as e:
-            logging.info("528, {}".format(str(e)))
-            return 528, "{}".format(str(e)), ""
+        # except sqlite.Error as e:
+        #     logging.info("528, {}".format(str(e)))
+        #     return 528, "{}".format(str(e)), ""
         except BaseException as e:
             logging.info("530, {}".format(str(e)))
             return 530, "{}".format(str(e)), ""
@@ -163,15 +163,15 @@ class Buyer(db_conn.DBConn):
 
             db_session.commit()
 
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
+        # except sqlite.Error as e:
+        #     return 528, "{}".format(str(e))
 
         except BaseException as e:
             return 530, "{}".format(str(e))
 
         return 200, "ok"
 
-    def add_funds(self, user_id, password, add_value) -> (int, str):
+    def add_funds(self, user_id:str, password:str, add_value:int) -> (int, str):
         try:
             # cursor = self.conn.execute("SELECT password  from user where user_id=?", (user_id,))
             # row = cursor.fetchone()
@@ -192,8 +192,8 @@ class Buyer(db_conn.DBConn):
 
             db_session.commit()
             # self.conn.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
+        # except sqlite.Error as e:
+        #     return 528, "{}".format(str(e))
         except BaseException as e:
             return 530, "{}".format(str(e))
 

@@ -1,12 +1,13 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy.dialects.mysql import LONGTEXT
 from be.model.database import Base
 
 
 class Store(Base):
     __tablename__ = 'store'
-    store_id = Column(String(80), primary_key=True)
-    book_id = Column(String(80), primary_key=True)
-    book_info = Column(String(80), nullable=True)
+    store_id = Column(String(120), primary_key=True)
+    book_id = Column(String(120), primary_key=True)
+    book_info = Column(LONGTEXT, nullable=True)
     stock_level = Column(Integer, nullable=True)
 
     def __init__(self, store_id=None, book_id=None, book_info=None, stock_level=None):

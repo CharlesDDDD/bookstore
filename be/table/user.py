@@ -4,8 +4,8 @@ from be.model.database import Base
 
 class User(Base):
     __tablename__ = 'user'
-    user_id = Column(String(80), primary_key=True)
-    password = Column(String(80), nullable=True)
+    user_id = Column(String(120), primary_key=True)
+    password = Column(String(120), nullable=True)
     balance = Column(Integer, nullable=True)
     token = Column(Text)
     terminal = Column(Text)

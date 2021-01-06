@@ -10,11 +10,11 @@ from be.view import seller
 from be.view import buyer
 from flask_sqlalchemy import SQLAlchemy
 from be import config
-from be.table.New_Order import New_Order
-from be.table.New_Order_Detail import New_Order_Detail
-from be.table.User import User
-from be.table.User_Store import User_Store
-from be.table.Store import Store
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
+from be.table.user import User
+from be.table.user_store import User_Store
+from be.table.store import Store
 bp_shutdown = Blueprint("shutdown", __name__)
 
 
@@ -47,9 +47,9 @@ def be_run():
 
     app = Flask(__name__)
     app.register_blueprint(bp_shutdown)
-    #app.register_blueprint(auth.bp_auth)
+    app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
-    #app.register_blueprint(buyer.bp_buyer)
+    app.register_blueprint(buyer.bp_buyer)
     app.config.from_object(config)
     db = SQLAlchemy(app)
     init_db()

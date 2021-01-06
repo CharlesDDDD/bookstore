@@ -1,6 +1,6 @@
 import requests
 from urllib.parse import urljoin
-from be.table import book
+from fe.access import book
 from fe.access.auth import Auth
 
 

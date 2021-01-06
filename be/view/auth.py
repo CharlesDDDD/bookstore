@@ -11,7 +11,7 @@ def login():
     user_id = request.json.get("user_id", "")
     password = request.json.get("password", "")
     terminal = request.json.get("terminal", "")
-    u = user.User()
+    u = user.Users()
     code, message, token = u.login(user_id=user_id, password=password, terminal=terminal)
     return jsonify({"message": message, "token": token}), code
 
@@ -20,7 +20,7 @@ def login():
 def logout():
     user_id: str = request.json.get("user_id")
     token: str = request.headers.get("token")
-    u = user.User()
+    u = user.Users()
     code, message = u.logout(user_id=user_id, token=token)
     return jsonify({"message": message}), code
 
@@ -29,7 +29,7 @@ def logout():
 def register():
     user_id = request.json.get("user_id", "")
     password = request.json.get("password", "")
-    u = user.User()
+    u = user.Users()
     code, message = u.register(user_id=user_id, password=password)
     return jsonify({"message": message}), code
 
@@ -38,7 +38,7 @@ def register():
 def unregister():
     user_id = request.json.get("user_id", "")
     password = request.json.get("password", "")
-    u = user.User()
+    u = user.Users()
     code, message = u.unregister(user_id=user_id, password=password)
     return jsonify({"message": message}), code
 
@@ -48,6 +48,6 @@ def change_password():
     user_id = request.json.get("user_id", "")
     old_password = request.json.get("oldPassword", "")
     new_password = request.json.get("newPassword", "")
-    u = user.User()
+    u = user.Users()
     code, message = u.change_password(user_id=user_id, old_password=old_password, new_password=new_password)
     return jsonify({"message": message}), code

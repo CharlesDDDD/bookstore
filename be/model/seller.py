@@ -26,6 +26,7 @@ class Seller(db_conn.DBConn):
             db_session.add(store_tmp)
             db_session.commit()
         except BaseException as e:
+            print(str(e))
             return 530, "{}".format(str(e))
         return 200, "ok"
 

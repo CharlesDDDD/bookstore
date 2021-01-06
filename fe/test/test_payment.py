@@ -3,7 +3,7 @@ import pytest
 from fe.access.buyer import Buyer
 from fe.test.gen_book_data import GenBook
 from fe.access.new_buyer import register_new_buyer
-from be.table.book import Book
+from fe.access.book import Book
 import uuid
 
 
