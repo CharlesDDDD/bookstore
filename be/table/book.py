@@ -147,7 +147,7 @@ class BookDB:
         # return books
 
 
-#
-if __name__ == '__main__':
-    bookdb = BookDB()
-    bookdb.get_book_info(0, bookdb.get_book_count())
+# #
+# if __name__ == '__main__':
+#     bookdb = BookDB()
+#     bookdb.get_book_info(0, bookdb.get_book_count())
