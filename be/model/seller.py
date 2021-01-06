@@ -2,9 +2,8 @@ import logging
 from be.model import error
 from be.model import db_conn
 from be.model.database import db_session
-from be.table.User import User
-from be.table.Store import Store
-from be.table.User_Store import User_Store
+from be.table.store import Store
+from be.table.user_store import User_Store
 
 
 class Seller(db_conn.DBConn):
