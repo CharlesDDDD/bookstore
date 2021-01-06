@@ -4,11 +4,11 @@ import json
 import logging
 from be.model import db_conn
 from be.model import error
-from be.table.New_Order import New_Order
-from be.table.New_Order_Detail import New_Order_Detail
-from be.table.User import User
-from be.table.Store import Store
-from be.table.User_Store import User_Store
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
+from be.table.user import User
+from be.table.store import Store
+from be.table.user_store import User_Store
 from be.model.database import db_session
 
 class Buyer(db_conn.DBConn):
@@ -23,6 +23,7 @@ class Buyer(db_conn.DBConn):
             if not self.store_id_exist(store_id):
                 return error.error_non_exist_store_id(store_id) + (order_id, )
             uid = "{}_{}_{}".format(user_id, store_id, str(uuid.uuid1()))
+            print(uid)
 
 
             for book_id, count in id_and_count:
@@ -48,7 +49,7 @@ class Buyer(db_conn.DBConn):
                 #     "UPDATE store set stock_level = stock_level - ? "
                 #     "WHERE store_id = ? and book_id = ? and stock_level >= ?; ",
                 #     (count, store_id, book_id, count))
-                row=Store.query.filter_by(store_id=store_id,book_id=book_id,stock_level=count).update({'stock_level':stock_level-count})
+                row=Store.query.filter_by(store_id=store_id,book_id=book_id,stock_level=stock_level).update({'stock_level':stock_level-count})
                 if row == 0:
                     return error.error_stock_level_low(book_id) + (order_id, )
 
@@ -67,6 +68,8 @@ class Buyer(db_conn.DBConn):
             row=New_Order(order_id=uid,store_id=store_id,user_id=user_id)
             db_session.add(row)
             order_id = uid
+            db_session.commit()
+
         except sqlite.Error as e:
             logging.info("528, {}".format(str(e)))
             return 528, "{}".format(str(e)), ""
@@ -80,14 +83,15 @@ class Buyer(db_conn.DBConn):
         try:
             # cursor = conn.execute("SELECT order_id, user_id, store_id FROM new_order WHERE order_id = ?", (order_id,))
             # row = cursor.fetchone()
+            print(user_id,order_id,password)
 
             row=New_Order.query.filter_by(order_id=order_id).first()
             if row is None:
                 return error.error_invalid_order_id(order_id)
-
             order_id = row.order_id
             buyer_id = row.user_id
             store_id = row.store_id
+            print(order_id,buyer_id,store_id)
 
             if buyer_id != user_id:
                 return error.error_authorization_fail()
@@ -104,11 +108,17 @@ class Buyer(db_conn.DBConn):
 
             # cursor = conn.execute("SELECT store_id, user_id FROM user_store WHERE store_id = ?;", (store_id,))
             # row = cursor.fetchone()
+            #买家
             row=User_Store.query.filter_by(store_id=store_id).first()
             if row is None:
                 return error.error_non_exist_store_id(store_id)
 
             seller_id = row.user_id
+            #卖家
+            row=User.query.filter_by(user_id=seller_id).first()
+            if row is None:
+                return error.error.error_non_exist_user_id(seller_id)
+            seller_balance=row.balance
 
             if not self.user_id_exist(seller_id):
                 return error.error_non_exist_user_id(seller_id)
@@ -121,9 +131,9 @@ class Buyer(db_conn.DBConn):
                 price = row.price
                 total_price = total_price + price * count
 
+            #买家付钱，钱减少
             if balance < total_price:
                 return error.error_not_sufficient_funds(order_id)
-
             # cursor = conn.execute("UPDATE user set balance = balance - ?"
             #                       "WHERE user_id = ? AND balance >= ?",
             #                       (total_price, buyer_id, total_price))
@@ -135,16 +145,17 @@ class Buyer(db_conn.DBConn):
             # cursor = conn.execute("UPDATE user set balance = balance + ?"
             #                       "WHERE user_id = ?",
             #                       (total_price, buyer_id))
-            cursor=User.query.filter_by(user_id=buyer_id).update({'balance':balance+total_price})
-
+            #卖家付钱，钱增多
+            cursor=User.query.filter_by(user_id=seller_id).update({'balance':seller_balance+total_price})
             if cursor == 0:
-                return error.error_non_exist_user_id(buyer_id)
+                return error.error_non_exist_user_id(seller_id)
 
             # cursor = conn.execute("DELETE FROM new_order WHERE order_id = ?", (order_id, ))
             cursor=New_Order.query.filter_by(order_id=order_id).delete()
             if cursor == 0:
                 return error.error_invalid_order_id(order_id)
 
+            #删除订单记录
             # cursor = conn.execute("DELETE FROM new_order_detail where order_id = ?", (order_id, ))
             cursor = New_Order_Detail.query.filter_by(order_id=order_id).delete()
             if cursor == 0:
