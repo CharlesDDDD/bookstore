@@ -117,7 +117,7 @@ class User(db_conn.DBConn):
             if row is None:
                 return error.error_authorization_fail() + ("", )
             row.token = token
-            row.terminal == terminal
+            row.terminal = terminal
             db_session.commit()
         except sqlite.Error as e:
             return 528, "{}".format(str(e)), ""
@@ -144,8 +144,8 @@ class User(db_conn.DBConn):
             if row is None:
                 return error.error_authorization_fail()
             row.token = dummy_token
-            row.terminal == terminal
-            db.session.commit()
+            row.terminal = terminal
+            db_session.commit()
         except sqlite.Error as e:
             return 528, "{}".format(str(e))
         except BaseException as e:
@@ -194,7 +194,7 @@ class User(db_conn.DBConn):
                 return error.error_authorization_fail()
             row.password = new_password
             row.token = token
-            row.terminal == terminal
+            row.terminal = terminal
             db_session.commit()
         except sqlite.Error as e:
             return 528, "{}".format(str(e))
