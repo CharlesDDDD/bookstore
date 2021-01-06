@@ -125,7 +125,7 @@ class User(db_conn.DBConn):
             return 530, "{}".format(str(e)), ""
         return 200, "ok", token
 
-    def logout(self, user_id: str, token: str) -> bool:
+    def logout(self, user_id: str, token: str) -> (int, str):
         try:
             code, message = self.check_token(user_id, token)
             if code != 200:
@@ -175,7 +175,7 @@ class User(db_conn.DBConn):
             return 530, "{}".format(str(e))
         return 200, "ok"
 
-    def change_password(self, user_id: str, old_password: str, new_password: str) -> bool:
+    def change_password(self, user_id: str, old_password: str, new_password: str) -> (int, str):
         try:
             code, message = self.check_password(user_id, old_password)
             if code != 200:
