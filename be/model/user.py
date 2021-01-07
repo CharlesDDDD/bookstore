@@ -63,7 +63,8 @@ class Users(db_conn.DBConn):
             db_session.add(user_tmp)
             db_session.commit()
 
-        except BaseException:
+        except BaseException as e:
+            print(e)
             return error.error_exist_user_id(user_id)
         return 200, "ok"
 

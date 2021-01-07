@@ -18,4 +18,4 @@ class User(Base):
         self.terminal = terminal
 
     def __repr__(self):
-        return '<User %r,%r,%r,%r,%r>' % (self.name,self.password,self.balance,self.terminal,self.terminal)
+        return '<User %r,%r,%r,%r,%r>' % (self.user_id,self.password,self.balance,self.terminal,self.terminal)
