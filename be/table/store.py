@@ -5,8 +5,8 @@ from be.model.database import Base
 
 class Store(Base):
     __tablename__ = 'store'
-    store_id = Column(String(120), primary_key=True)
-    book_id = Column(String(120), primary_key=True)
+    store_id = Column(String(240), primary_key=True)
+    book_id = Column(String(240), primary_key=True)
     book_info = Column(LONGTEXT, nullable=True)
     stock_level = Column(Integer, nullable=True)
 

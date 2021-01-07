@@ -4,8 +4,8 @@ from be.model.database import Base
 
 class User_Store(Base):
     __tablename__ = 'user_store'
-    user_id = Column(String(120), primary_key=True)
-    store_id = Column(String(120), primary_key=True)
+    user_id = Column(String(240), primary_key=True)
+    store_id = Column(String(240), primary_key=True)
 
     def __init__(self, user_id=None, store_id=None):
         self.user_id = user_id

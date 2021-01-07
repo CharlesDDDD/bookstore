@@ -4,8 +4,8 @@ from be.model.database import Base
 
 class New_Order_Detail(Base):
     __tablename__ = 'new_order_detail'
-    order_id = Column(String(120), primary_key=True)
-    book_id = Column(String(120), primary_key=True)
+    order_id = Column(String(240), primary_key=True)
+    book_id = Column(String(240), primary_key=True)
     count = Column(Integer, nullable=False)
     price = Column(Integer, nullable=False)
 
