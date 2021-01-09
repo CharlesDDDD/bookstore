@@ -2,7 +2,10 @@ import logging
 from be.model import error
 from be.model import db_conn
 from be.model.database import db_session
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
 from be.table.store import Store
+from be.table.user import User
 from be.table.user_store import User_Store
 
 
@@ -64,6 +67,22 @@ class Seller(db_conn.DBConn):
             # self.conn.commit()
             user_store = User_Store(user_id=user_id, store_id=store_id)
             db_session.add(user_store)
+            db_session.commit()
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200, "ok"
+
+    def send_stock(self, user_id: str, order_id: str) -> (int, str):
+        try:
+            print(user_id, order_id)
+            row = New_Order.query.filter_by(order_id=order_id).first()
+            if row is None:
+                return error.error_invalid_order_id()
+            row = User.query.filter_by(user_id=user_id).first()
+            if row is None:
+                return error.error_non_exist_user_id()
+            db_session.query(New_Order_Detail).filter(New_Order_Detail.order_id == order_id).update(
+                {New_Order_Detail.state: 2})
             db_session.commit()
         except BaseException as e:
             return 530, "{}".format(str(e))
