@@ -77,10 +77,10 @@ class Seller(db_conn.DBConn):
             print(user_id, order_id)
             row = New_Order.query.filter_by(order_id=order_id).first()
             if row is None:
-                return error.error_invalid_order_id()
+                return error.error_invalid_order_id(order_id)
             row = User.query.filter_by(user_id=user_id).first()
             if row is None:
-                return error.error_non_exist_user_id()
+                return error.error_non_exist_user_id(user_id)
             db_session.query(New_Order_Detail).filter(New_Order_Detail.order_id == order_id).update(
                 {New_Order_Detail.state: 2})
             db_session.commit()
