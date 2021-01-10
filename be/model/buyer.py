@@ -1,7 +1,7 @@
+import sqlite3 as sqlite
 import uuid
 import json
 import logging
-import time
 from be.model import db_conn
 from be.model import error
 from be.table.new_order import New_Order
@@ -23,6 +23,7 @@ class Buyer(db_conn.DBConn):
             if not self.store_id_exist(store_id):
                 return error.error_non_exist_store_id(store_id) + (order_id, )
             uid = "{}_{}_{}".format(user_id, store_id, str(uuid.uuid1()))
+            print(uid)
 
 
             for book_id, count in id_and_count:
@@ -56,7 +57,7 @@ class Buyer(db_conn.DBConn):
                 #         "INSERT INTO new_order_detail(order_id, book_id, count, price) "
                 #         "VALUES(?, ?, ?, ?);",
                 #         (uid, book_id, count, price))
-                row=New_Order_Detail(order_id=uid,book_id=book_id,count=count,price=price,state=0,time=time.time())
+                row=New_Order_Detail(order_id=uid,book_id=book_id,count=count,price=price)
                 db_session.add(row)
 
             # self.conn.execute(
@@ -73,7 +74,6 @@ class Buyer(db_conn.DBConn):
         #     logging.info("528, {}".format(str(e)))
         #     return 528, "{}".format(str(e)), ""
         except BaseException as e:
-            print(e)
             logging.info("530, {}".format(str(e)))
             return 530, "{}".format(str(e)), ""
 
@@ -83,6 +83,7 @@ class Buyer(db_conn.DBConn):
         try:
             # cursor = conn.execute("SELECT order_id, user_id, store_id FROM new_order WHERE order_id = ?", (order_id,))
             # row = cursor.fetchone()
+            print(user_id,order_id,password)
 
             row=New_Order.query.filter_by(order_id=order_id).first()
             if row is None:
@@ -90,6 +91,7 @@ class Buyer(db_conn.DBConn):
             order_id = row.order_id
             buyer_id = row.user_id
             store_id = row.store_id
+            print(order_id,buyer_id,store_id)
 
             if buyer_id != user_id:
                 return error.error_authorization_fail()
@@ -115,7 +117,7 @@ class Buyer(db_conn.DBConn):
             #卖家
             row=User.query.filter_by(user_id=seller_id).first()
             if row is None:
-                return error.error_non_exist_user_id(seller_id)
+                return error.error.error_non_exist_user_id(seller_id)
             seller_balance=row.balance
 
             if not self.user_id_exist(seller_id):
@@ -143,23 +145,26 @@ class Buyer(db_conn.DBConn):
             # cursor = conn.execute("UPDATE user set balance = balance + ?"
             #                       "WHERE user_id = ?",
             #                       (total_price, buyer_id))
-            #卖家收钱，钱增多
+            #卖家付钱，钱增多
             cursor=User.query.filter_by(user_id=seller_id).update({'balance':seller_balance+total_price})
             if cursor == 0:
                 return error.error_non_exist_user_id(seller_id)
 
-            #将记录的state改为1，表示已付款
             # cursor = conn.execute("DELETE FROM new_order WHERE order_id = ?", (order_id, ))
-            cursor = New_Order_Detail.query.filter_by(order_id=order_id).update({"state":1})
+            cursor=New_Order.query.filter_by(order_id=order_id).delete()
             if cursor == 0:
                 return error.error_invalid_order_id(order_id)
 
+            #删除订单记录
             # cursor = conn.execute("DELETE FROM new_order_detail where order_id = ?", (order_id, ))
-            # cursor = New_Order_Detail.query.filter_by(order_id=order_id).delete()
-            # if cursor == 0:
-            #     return error.error_invalid_order_id(order_id)
+            cursor = New_Order_Detail.query.filter_by(order_id=order_id).delete()
+            if cursor == 0:
+                return error.error_invalid_order_id(order_id)
 
             db_session.commit()
+
+        # except sqlite.Error as e:
+        #     return 528, "{}".format(str(e))
 
         except BaseException as e:
             return 530, "{}".format(str(e))
@@ -193,106 +198,3 @@ class Buyer(db_conn.DBConn):
             return 530, "{}".format(str(e))
 
         return 200, "ok"
-
-
-
-    def confirm_stock(self,user_id : str,password : str, order_id : str) -> (int, str):
-        try:
-            if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id)
-
-            row=User.query.filter_by(user_id=user_id).first()
-            if password != row.password:
-                return error.error_authorization_fail()
-            cursor = New_Order_Detail.query.filter_by(order_id = order_id).first()
-
-            if cursor is None:
-                return error.error_invalid_order_id(order_id)
-
-            if cursor.state != 2 :
-                return error.error_order_not_dispatched(order_id)
-
-            cursor=New_Order_Detail.query.filter_by(order_id = order_id).update({"state":3})#订单全部更新为3
-            if cursor == 0:
-                return error.error_invalid_order_id(order_id)
-            db_session.commit()
-
-        except BaseException as e:
-            return 530, "{}".format(str(e))
-        return 200, "ok"
-
-
-
-    def cancel_order (self, user_id : str, password : str, order_id : str) -> (int, str):
-        try:
-            if not self.user_id_exist(user_id):
-                return error.error_non_exist_user_id(user_id)
-
-            row=User.query.filter_by(user_id=user_id).first()
-            if password != row.password:
-                return error.error_authorization_fail()
-            buyer_balance=row.balance
-
-            row=New_Order.query.filter(New_Order.user_id==user_id,New_Order.order_id==order_id).first()
-            if row is None:
-                return error.error_invalid_order_id(order_id)
-            store_id=row.store_id
-            #已经发货了就不能取消订单了，因此状态码只能是1才能主动取消订单
-            row=New_Order_Detail.query.filter_by(order_id=order_id).first()
-
-
-            if row.state!=1:
-                return error.error_cancel_order(order_id)
-
-            #可以取消,则买家收钱，卖家减钱,状态码改为-1，表示订单关闭
-            cursor = New_Order_Detail.query.filter_by(order_id=order_id).all()
-            total_price = 0
-            for row in cursor:
-                count = row.count
-                price = row.price
-                total_price = total_price + price * count
-
-            row=User.query.filter_by(user_id=user_id).update({"balance":buyer_balance+total_price})
-            if row == 0:
-                return error.error_non_exist_user_id(user_id)
-
-            row=User_Store.query.filter_by(store_id=store_id).first()
-            if row is None :
-                return error.error_non_exist_store_id(store_id)
-            seller_id=row.user_id
-
-            row=User.query.filter_by(user_id=seller_id).first()
-            if row is None:
-                return error.error_non_exist_user_id(seller_id)
-            seller_balance=row.balance
-
-            row=User.query.filter_by(user_id=seller_id).update({"balance":seller_balance-total_price})
-            if row == 0:
-                return error.error_not_sufficient_funds(order_id)
-
-            #将订单状态改为-1
-            row=New_Order_Detail.query.filter_by(order_id=order_id).update({"state":-1})
-            if row == 0:
-                return error.error_invalid_order_id(order_id)
-            db_session.commit()
-
-        except BaseException as e:
-            return 530, "{}".format(str(e))
-        return 200, "ok"
-
-
-    def auto_cancel_order(self):
-        cursor=New_Order_Detail.query.filter_by(state=0).all()
-        #得到order_id_list
-        order_id_list=[]
-        for item in cursor:
-            order_id_list.append(item.order_id)
-        order_id_list=list(set(order_id_list))#去重
-
-        for id in order_id_list:
-            row=New_Order_Detail.query.filter_by(order_id=id).first()
-            end_time=time.time()
-            if (end_time-row.time >= 600):#付款时间超过10分钟自动取消
-                New_Order_Detail.query.filter_by(order_id=id).update({"state":-1})
-
-        db_session.commit()
