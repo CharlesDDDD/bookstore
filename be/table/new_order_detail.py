@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text
 from be.model.database import Base
 
-
 class New_Order_Detail(Base):
     __tablename__ = 'new_order_detail'
     order_id = Column(String(240), primary_key=True)
