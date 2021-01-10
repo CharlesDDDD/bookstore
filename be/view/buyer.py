@@ -42,6 +42,7 @@ def add_funds():
     return jsonify({"message": message}), code
 
 
+
 @bp_buyer.route("/confirm_stock",methods=["POST"])
 def confirm_stock():
     user_id=request.json.get("user_id")
@@ -50,6 +51,7 @@ def confirm_stock():
     b=Buyer()
     code,message = b.confirm_stock(user_id,password,order_id)
     return jsonify({"message":message}), code
+
 
 @bp_buyer.route("/cancel_order",methods=["POST"])
 def cancel_order():
