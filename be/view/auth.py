@@ -51,3 +51,12 @@ def change_password():
     u = user.Users()
     code, message = u.change_password(user_id=user_id, old_password=old_password, new_password=new_password)
     return jsonify({"message": message}), code
+
+
+@bp_auth.route("/search_orders" , methods=["POST"])
+def search_orders():
+    user_id = request.json.get("user_id", "")
+    password = request.json.get("password", "")
+    u=user.Users()
+    code , message =u.search_orders(user_id,password)
+    return jsonify({"message" : message}) , code

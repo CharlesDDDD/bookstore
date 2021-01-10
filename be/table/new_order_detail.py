@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text
 from be.model.database import Base
 
 
@@ -10,13 +10,15 @@ class New_Order_Detail(Base):
     price = Column(Integer, nullable=False)
     # state 0:未付款 1:已付款 2：已发货 3：已收货
     state = Column(Integer, nullable=False)
+    time = Column(Integer,nullable=False)
 
-    def __init__(self, order_id=None, book_id=None, count=None, price=None, state=0):
+    def __init__(self, order_id=None, book_id=None, count=None, price=None, state=0,time=0):
         self.order_id = order_id
         self.book_id = book_id
         self.count = count
         self.price = price
         self.state = state
+        self.time=time
 
     def __repr__(self):
         return '<User %r,%r,%r,%r,%r>' % (self.order_id, self.book_id, self.count, self.price, self.state)

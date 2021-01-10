@@ -5,6 +5,8 @@ import sqlite3 as sqlite
 from be.model import error
 from be.model import db_conn
 from be.model.database import db_session
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
 from be.table.user import User
 
 # encode a json string like:
@@ -64,7 +66,6 @@ class Users(db_conn.DBConn):
             db_session.commit()
 
         except BaseException as e:
-            print(e)
             return error.error_exist_user_id(user_id)
         return 200, "ok"
 
@@ -109,8 +110,7 @@ class Users(db_conn.DBConn):
             row.token = token
             row.terminal = terminal
             db_session.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e)), ""
+
         except BaseException as e:
             return 530, "{}".format(str(e)), ""
         return 200, "ok", token
@@ -136,8 +136,7 @@ class Users(db_conn.DBConn):
             row.token = dummy_token
             row.terminal = terminal
             db_session.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
+
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"
@@ -159,8 +158,7 @@ class Users(db_conn.DBConn):
             else:
                 db_session.delete(row)
                 db_session.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
+
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"
@@ -186,9 +184,36 @@ class Users(db_conn.DBConn):
             row.token = token
             row.terminal = terminal
             db_session.commit()
-        except sqlite.Error as e:
-            return 528, "{}".format(str(e))
+
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"
+
+
+    def search_orders (self , user_id : str , password : str) -> (int,str):
+
+        try:
+            code, message = self.check_password(user_id, password)
+            if code != 200:
+                return code, message
+
+            orders=New_Order.query.filter_by(user_id=user_id).all()
+            if orders is None :
+                return error.error_non_exist_order_id(user_id)
+
+            list_orders=[]
+            for order in orders:
+                items=New_Order_Detail.query.filter_by(order_id=order.order_id).all()
+                for item in items:
+                    list_orders.append({"user_id":user_id,"order_id":item.order_id,"book_id":item.book_id,"count":item.count,"price":item.price})
+
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200,str(list_orders)
+
+
+
+
+
+
 
