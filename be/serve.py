@@ -3,15 +3,19 @@ import os
 from flask import Flask
 from flask import Blueprint
 from flask import request
-from flask_apscheduler import APScheduler
 
 from be.model.database import init_db
 from be.view import auth
 from be.view import seller
 from be.view import buyer
+import random
 from flask_sqlalchemy import SQLAlchemy
 from be import config
-from be.config_auto_cancel import Config
+from be.table.new_order import New_Order
+from be.table.new_order_detail import New_Order_Detail
+from be.table.user import User
+from be.table.user_store import User_Store
+from be.table.store import Store
 bp_shutdown = Blueprint("shutdown", __name__)
 
 
@@ -47,14 +51,5 @@ def be_run():
     app.register_blueprint(auth.bp_auth)
     app.register_blueprint(seller.bp_seller)
     app.register_blueprint(buyer.bp_buyer)
-    app.config.from_object(config)
-    app.config.from_object(Config())
-
-    scheduler = APScheduler()
-    scheduler.init_app(app)
-    scheduler.start()
-
-    db = SQLAlchemy(app)
-
     init_db()
-    app.run()
+    app.run(debug=True)

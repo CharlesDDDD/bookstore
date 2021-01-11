@@ -21,7 +21,7 @@ def jwt_encode(user_id: str, terminal: str) -> str:
     encoded = jwt.encode(
         {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
         key=user_id,
-        algorithm="HS256",
+        algorithm="HS256"
     )
     return encoded.decode("utf-8")
 

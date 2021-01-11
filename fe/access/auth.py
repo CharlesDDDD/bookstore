@@ -13,9 +13,9 @@ class Auth:
         return r.status_code, r.json().get("token")
 
     def register(
-        self,
-        user_id: str,
-        password: str
+            self,
+            user_id: str,
+            password: str
     ) -> int:
         json = {
             "user_id": user_id,
