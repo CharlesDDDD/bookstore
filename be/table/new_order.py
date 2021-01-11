@@ -5,7 +5,7 @@ from be.model.database import Base
 class New_Order(Base):
     __tablename__ = 'new_order'
     order_id = Column(String(240), primary_key=True)
-    user_id = Column(String(240), unique=True)
+    user_id = Column(String(240))
     store_id = Column(String(240), nullable=False)
 
     def __init__(self, order_id=None, user_id=None, store_id=None):
