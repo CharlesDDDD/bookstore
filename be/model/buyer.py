@@ -281,18 +281,3 @@ class Buyer(db_conn.DBConn):
         return 200, "ok"
 
 
-    def auto_cancel_order(self):
-        cursor=New_Order_Detail.query.filter_by(state=0).all()
-        #得到order_id_list
-        order_id_list=[]
-        for item in cursor:
-            order_id_list.append(item.order_id)
-        order_id_list=list(set(order_id_list))#去重
-
-        for id in order_id_list:
-            row=New_Order_Detail.query.filter_by(order_id=id).first()
-            end_time=time.time()
-            if (end_time-row.time >= 600):#付款时间超过10分钟自动取消
-                New_Order_Detail.query.filter_by(order_id=id).update({"state":-1})
-
-        db_session.commit()
