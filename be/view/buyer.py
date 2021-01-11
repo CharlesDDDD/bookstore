@@ -42,22 +42,35 @@ def add_funds():
     return jsonify({"message": message}), code
 
 
+@bp_buyer.route("/search_book", methods=["POST"])
+def search_book():
+    user_id = request.json.get("user_id")
+    store_id = request.json.get("password")
+    title = request.json.get("title")
+    tag = request.json.get('tag')
+    category = request.json.get('category')
+    content = request.json.get('content')
 
-@bp_buyer.route("/confirm_stock",methods=["POST"])
+    b = Buyer()
+    code, message = b.search_book()
+    return jsonify({"message": message}), code
+
+
+@bp_buyer.route("/confirm_stock", methods=["POST"])
 def confirm_stock():
-    user_id=request.json.get("user_id")
+    user_id = request.json.get("user_id")
     password = request.json.get("password")
-    order_id=request.json.get("order_id")
-    b=Buyer()
-    code,message = b.confirm_stock(user_id,password,order_id)
-    return jsonify({"message":message}), code
+    order_id = request.json.get("order_id")
+    b = Buyer()
+    code, message = b.confirm_stock(user_id, password, order_id)
+    return jsonify({"message": message}), code
 
 
-@bp_buyer.route("/cancel_order",methods=["POST"])
+@bp_buyer.route("/cancel_order", methods=["POST"])
 def cancel_order():
     user_id = request.json.get("user_id")
     password = request.json.get("password")
     order_id = request.json.get("order_id")
-    b=Buyer()
-    code , message = b.cancel_order(user_id,password,order_id)
-    return jsonify({"message" : message}) , code
+    b = Buyer()
+    code, message = b.cancel_order(user_id, password, order_id)
+    return jsonify({"message": message}), code
