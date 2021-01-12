@@ -323,3 +323,28 @@ class Buyer(db_conn.DBConn):
         except BaseException as e:
             return 530, "{}".format(str(e))
         return 200, "ok"
+
+    def search_orders (self , user_id : str , password : str) -> (int,str):
+
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+
+            row=User.query.filter_by(user_id=user_id).first()
+            if password != row.password:
+                return error.error_authorization_fail()
+
+            orders=New_Order.query.filter_by(user_id=user_id).all()
+            if orders is None :
+                return error.error_non_exist_order_id(user_id)
+
+            list_orders=[]
+            for order in orders:
+                items=New_Order_Detail.query.filter_by(order_id=order.order_id).all()
+                for item in items:
+                    list_orders.append({"user_id":user_id,"order_id":item.order_id,"book_id":item.book_id,"count":item.count,"price":item.price})
+
+        except BaseException as e:
+            print(e)
+            return 530, "{}".format(str(e))
+        return 200,str(list_orders)
