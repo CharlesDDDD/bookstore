@@ -4,6 +4,7 @@ import logging
 import time
 from be.model import db_conn
 from be.model import error
+from be.model.error import error_code
 from be.table.new_order import New_Order
 from be.table.new_order_detail import New_Order_Detail
 from be.table.user import User
@@ -278,5 +279,47 @@ class Buyer(db_conn.DBConn):
             return 530, "{}".format(str(e))
         return 200, "ok"
 
-    def search_book(self, store_id: str, tag: str, title: str, content: str, category: str) -> (int, str):
-        return
+    def search_book(self, user_id: str, password: str, store_id: str, tag: str, title: str, content: str,
+                    author: str) -> (int, str):
+        try:
+            if not self.user_id_exist(user_id):
+                return error.error_non_exist_user_id(user_id)
+            if tag is None and title is None and content is None:
+                return 523, error_code['523']
+
+            # row = User.query.filter_by(user_id=user_id).first()
+            # if password != row.password:
+            #     return error.error_authorization_fail()
+            # 全局搜索
+            if store_id is None:
+                sql = "select * from store where match (title,tag,author,content) against ('"
+                if tag is not None:
+                    sql += tag + ' '
+                if title is not None:
+                    sql += title + ' '
+                if author is not None:
+                    sql += title + ' '
+                if content is not None:
+                    sql += content
+                sql += "');"
+                cursor = db_session.execute(sql).fetchall()
+                for item in cursor:
+                    print(item)
+            #当前店铺搜索
+            else:
+                sql = "select * from store where store_id = "+store_id+" and match (title,tag,author,content) against ('"
+                if tag is not None:
+                    sql += tag + ' '
+                if title is not None:
+                    sql += title + ' '
+                if author is not None:
+                    sql += title + ' '
+                if content is not None:
+                    sql += content
+                sql += "');"
+                cursor = db_session.execute(sql).fetchall()
+                for item in cursor:
+                    print(item)
+        except BaseException as e:
+            return 530, "{}".format(str(e))
+        return 200, "ok"
