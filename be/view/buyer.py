@@ -83,5 +83,5 @@ def search_orders():
     user_id = request.json.get("user_id")
     password = request.json.get("password")
     b = Buyer()
-    code, message = b.cancel_order(user_id, password)
+    code, message = b.search_orders(user_id, password)
     return jsonify({"message": message}), code
