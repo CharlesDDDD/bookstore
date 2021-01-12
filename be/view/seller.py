@@ -22,9 +22,16 @@ def seller_add_book():
     store_id: str = request.json.get("store_id")
     book_info: str = request.json.get("book_info")
     stock_level: str = request.json.get("stock_level", 0)
+    print(type(book_info))
+    title = book_info['title']
+    tag = str(book_info['tags'])
+    content = book_info['content']
+    author = book_info['author']
+
 
     s = seller.Seller()
-    code, message = s.add_book(user_id, store_id, book_info.get("id"), json.dumps(book_info), stock_level)
+    code, message = s.add_book(user_id=user_id, store_id=store_id, book_id=book_info.get("id"), book_json_str=json.dumps(book_info), stock_level=stock_level, title=title,
+                               tag=tag, content=content, author=author)
 
     return jsonify({"message": message}), code
 

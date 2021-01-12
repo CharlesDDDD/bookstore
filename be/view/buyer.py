@@ -42,22 +42,46 @@ def add_funds():
     return jsonify({"message": message}), code
 
 
-
-@bp_buyer.route("/confirm_stock",methods=["POST"])
-def confirm_stock():
-    user_id=request.json.get("user_id")
+@bp_buyer.route("/search_book", methods=["POST"])
+def search_book():
+    user_id = request.json.get("user_id")
     password = request.json.get("password")
-    order_id=request.json.get("order_id")
-    b=Buyer()
-    code,message = b.confirm_stock(user_id,password,order_id)
-    return jsonify({"message":message}), code
+    store_id = request.json.get("store_id", None)
+    title = request.json.get("title")
+    tag = request.json.get('tag')
+    author = request.json.get('author')
+    content = request.json.get('content')
+
+    b = Buyer()
+    code, message = b.search_book(user_id=user_id, password=password, store_id=store_id, title=title, tag=tag,
+                                  author=author,
+                                  content=content)
+    return jsonify({"message": message}), code
 
 
-@bp_buyer.route("/cancel_order",methods=["POST"])
+@bp_buyer.route("/confirm_stock", methods=["POST"])
+def confirm_stock():
+    user_id = request.json.get("user_id")
+    password = request.json.get("password")
+    order_id = request.json.get("order_id")
+    b = Buyer()
+    code, message = b.confirm_stock(user_id, password, order_id)
+    return jsonify({"message": message}), code
+
+
+@bp_buyer.route("/cancel_order", methods=["POST"])
 def cancel_order():
     user_id = request.json.get("user_id")
     password = request.json.get("password")
     order_id = request.json.get("order_id")
-    b=Buyer()
-    code , message = b.cancel_order(user_id,password,order_id)
-    return jsonify({"message" : message}) , code
+    b = Buyer()
+    code, message = b.cancel_order(user_id, password, order_id)
+    return jsonify({"message": message}), code
+
+@bp_buyer.route("/search_orders", methods=["POST"])
+def search_orders():
+    user_id = request.json.get("user_id")
+    password = request.json.get("password")
+    b = Buyer()
+    code, message = b.cancel_order(user_id, password)
+    return jsonify({"message": message}), code

@@ -1,12 +1,9 @@
 import jwt
 import time
 import logging
-import sqlite3 as sqlite
 from be.model import error
 from be.model import db_conn
 from be.model.database import db_session
-from be.table.new_order import New_Order
-from be.table.new_order_detail import New_Order_Detail
 from be.table.user import User
 
 # encode a json string like:
@@ -21,7 +18,7 @@ def jwt_encode(user_id: str, terminal: str) -> str:
     encoded = jwt.encode(
         {"user_id": user_id, "terminal": terminal, "timestamp": time.time()},
         key=user_id,
-        algorithm="HS256",
+        algorithm="HS256"
     )
     return encoded.decode("utf-8")
 
@@ -191,26 +188,6 @@ class Users(db_conn.DBConn):
 
 
 
-    def search_orders (self , user_id : str , password : str) -> (int,str):
-
-        try:
-            code, message = self.check_password(user_id, password)
-            if code != 200:
-                return code, message
-
-            orders=New_Order.query.filter_by(user_id=user_id).all()
-            if orders is None :
-                return error.error_non_exist_order_id(user_id)
-
-            list_orders=[]
-            for order in orders:
-                items=New_Order_Detail.query.filter_by(order_id=order.order_id).all()
-                for item in items:
-                    list_orders.append({"user_id":user_id,"order_id":item.order_id,"book_id":item.book_id,"count":item.count,"price":item.price})
-
-        except BaseException as e:
-            return 530, "{}".format(str(e))
-        return 200,str(list_orders)
 
 
 
