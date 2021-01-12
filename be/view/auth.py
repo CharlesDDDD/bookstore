@@ -2,18 +2,25 @@ from flask import Blueprint
 from flask import request
 from flask import jsonify
 from be.model import user
+from flask import render_template
 
 bp_auth = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-@bp_auth.route("/login", methods=["POST"])
+@bp_auth.route("/login", methods=["POST", "GET"])
 def login():
-    user_id = request.json.get("user_id", "")
-    password = request.json.get("password", "")
-    terminal = request.json.get("terminal", "")
-    u = user.Users()
-    code, message, token = u.login(user_id=user_id, password=password, terminal=terminal)
-    return jsonify({"message": message, "token": token}), code
+    if request.method == 'POST':
+        user_id = request.form['user_id']
+        password = request.form['password']
+        terminal = request.form['terminal']
+        # user_id = request.json.get("user_id", "")
+        # password = request.json.get("password", "")
+        # terminal = request.json.get("terminal", "")
+        u = user.Users()
+        code, message, token = u.login(user_id=user_id, password=password, terminal=terminal)
+        return jsonify({"message": message, "token": token}), code
+    else:
+        return render_template("login.html")
 
 
 @bp_auth.route("/logout", methods=["POST"])
@@ -25,13 +32,19 @@ def logout():
     return jsonify({"message": message}), code
 
 
-@bp_auth.route("/register", methods=["POST"])
+@bp_auth.route("/register", methods=["POST", "GET"])
 def register():
-    user_id = request.json.get("user_id", "")
-    password = request.json.get("password", "")
-    u = user.Users()
-    code, message = u.register(user_id=user_id, password=password)
-    return jsonify({"message": message}), code
+    if request.method == 'POST':
+        user_id = request.form['user_id']
+        password = request.form['password']
+        # user_id = request.json.get("user_id", "")
+        # password = request.json.get("password", "")
+        u = user.Users()
+        code, message = u.register(user_id=user_id, password=password)
+        print(message)
+        return jsonify({"message": message}), code
+    else:
+        return render_template("register.html")
 
 
 @bp_auth.route("/unregister", methods=["POST"])

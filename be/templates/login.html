@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/css/home.css">
+    <title>登录</title>
+    <script src="../static/js/jquery-3.5.1.min.js"></script>
+    <script src="http://api.html5media.info/1.1.8/html5media.min.js"></script>
+    <script type="text/javascript">
+    function login(obj){
+        window.location = "self.html";
+    }
+    </script>
+</head>
+<body>
+    <div class="background">
+        <video autoplay loop muted>
+            <source src="../static/video/video.mp4" type="video/mp4"  />
+            Your Browser is no longer supported.
+        </video>
+    </div>
+
+    <div class="login">
+        <div class="logo_1"></div>
+        <div class="form-item">
+            <p style="padding-bottom:30px"><input id="user_id" sautocomplete="off" placeholder="用户名" name="user_id"></p>
+            <p style="padding-bottom:30px"><input id="password" type="password" autocomplete="off" placeholder="登录密码" name="password"></p>
+            <p><input type="submit" value="登录" id="login" onclick="login(this)" style="padding-left:0;margin-left:0;width:350px;background-color:white;color:#1f6f4a;cursor:pointer"></p>
+        </div>
+        <div class="reg-bar">
+            <a class="reg" href="register.html">立即注册</a>
+            <a class="forget" href="forget.html">忘记密码</a>
+        </div>
+    </div>
+
+</body>
+</html>

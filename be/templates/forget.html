@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/css/home.css">
+    <title>忘记密码</title>
+    <script src="../static/js/jquery-3.5.1.min.js"></script>
+    <script src="http://api.html5media.info/1.1.8/html5media.min.js"></script>
+    <script type="text/javascript">
+    function forget(obj){
+        window.location = "login.html";
+    } 
+    </script>
+</head>
+<body>
+    <div class="background">
+        <video autoplay loop muted>
+            <source src="../static/video/video.mp4" type="video/mp4"  />
+            Your Browser is no longer supported.
+        </video>
+    </div>
+
+    <div class="login">
+        <div class="logo_1"></div>
+        <div class="form-item">
+            <p style="padding-bottom:15px"><input id="phonenum" oninput="value=value.replace(/[^\d]/g,'')" autocomplete="off" placeholder="电话号码" name="phonenum"></p>
+            <p style="padding-bottom:15px"><input id="password" type="password" autocomplete="off" placeholder="登录密码" name="password"></p>
+            <p style="padding-bottom:15px"><input id="password1" type="password" autocomplete="off" placeholder="确认登录密码" name="password1"></p>
+            <p><input type="submit" id="register" value="修改密码" onclick="forget(this)" style="padding-left:0;margin-left:0;width:350px;background-color:white;color:#1f6f4a;cursor:pointer"></p>
+        </div>
+    </div>
+
+</body>
+</html>
