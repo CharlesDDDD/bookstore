@@ -79,7 +79,7 @@ def cancel_order():
     return jsonify({"message": message}), code
 
 @bp_buyer.route("/search_orders", methods=["POST"])
-def cancel_order():
+def search_orders():
     user_id = request.json.get("user_id")
     password = request.json.get("password")
     b = Buyer()
