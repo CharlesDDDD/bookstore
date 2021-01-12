@@ -13,7 +13,8 @@ class Seller(db_conn.DBConn):
     def __init__(self):
         db_conn.DBConn.__init__(self)
 
-    def add_book(self, user_id: str, store_id: str, book_id: str, book_json_str: str, stock_level: int):
+    def add_book(self, user_id: str, store_id: str, book_id: str, book_json_str: str, stock_level: int, title: str,
+                 author: str, content: str, tag: str):
         try:
             if not self.user_id_exist(user_id):
                 return error.error_non_exist_user_id(user_id)
@@ -25,7 +26,8 @@ class Seller(db_conn.DBConn):
             # self.conn.execute("INSERT into store(store_id, book_id, book_info, stock_level)"
             #                   "VALUES (?, ?, ?, ?)", (store_id, book_id, book_json_str, stock_level))
             # self.conn.commit()
-            store_tmp = Store(store_id, book_id, book_json_str, stock_level)
+            store_tmp = Store(store_id=store_id,book_id= book_id, book_info=book_json_str,stock_level= stock_level, tag=tag, author=author, content=content,
+                              title=title)
             db_session.add(store_tmp)
             db_session.commit()
         except BaseException as e:
